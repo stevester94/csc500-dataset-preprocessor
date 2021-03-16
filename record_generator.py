@@ -1,5 +1,11 @@
 #! /usr/bin/python3
+
+import numpy as np
 import tensorflow as tf
+from tensorflow.keras.layers import Reshape,Dense,Dropout,Activation,Flatten, Convolution1D, MaxPooling2D, ZeroPadding2D, Permute
+import tensorflow.keras.models as models
+import tensorflow.keras as keras
+
 
 ####################
 # Below are ripped from https://www.tensorflow.org/tutorials/load_data/tfrecord
@@ -45,7 +51,12 @@ _ofdm_example_description = {
     'day'           : tf.io.FixedLenFeature([], tf.int64, default_value=0),
 }
 def parse_serialized_ofdm_frame_example(serialized_example):
-    return tf.io.parse_single_example(serialized_example, _ofdm_example_description)
+    parsed_example = tf.io.parse_single_example(serialized_example, _ofdm_example_description)
+
+    # Note that you can actually do some pretty tricky shit here such as
+    #return parsed_example["time_domain_IQ"], parsed_example["device_id"]
+    return parsed_example["device_id"]
+    #return parsed_example
 
 def write_examples_to_records(examples, record_path):
     with tf.io.TFRecordWriter(record_path) as writer:
@@ -67,8 +78,17 @@ if __name__ == "__main__":
 
     print(parsed_dataset)
 
-    for features in parsed_dataset:
-        print(features)
+    # for features in parsed_dataset:
+    #     print(features)
+
+    c = tf.constant([1,2,3], dtype=tf.float32, shape=[3,])
+    inputs  = keras.Input(shape=(3,))
+    outputs = tf.keras.layers.multiply([inputs, c])
+
+    model = keras.Model(inputs=inputs, outputs=outputs, name="steves_model")
+
+    # model.summary()
+    # print( model( tf.constant([2,2,2], dtype=tf.float32, shape=[3,]) ) )
 
 
-    # Keras expects either an X and Y dataset for the model, or a single dataset which yields (x, y)
+    # # Keras expects either an X and Y dataset for the model, or a single dataset which yields (x, y)
