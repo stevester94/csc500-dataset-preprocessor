@@ -32,8 +32,8 @@ cat << EOF
 {
     "sha512": "$sha512",
     "transmitter_id": "$transmitter_id",
-    "transmission_id": "$transmission_id"
+    "transmission_id": "$transmission_id",
     "day": "$day",
-    "sample_count": "$sample_count",
+    "sample_count": "$sample_count"
 }
 EOF
