@@ -40,36 +40,41 @@ if __name__ == "__main__":
         transmission_id_to_get=[transmission_id],
         tfrecords_path=symbol_tfrecords_base_path)
 
-    ds = vdsa.get_dataset()
+    ds = vdsa.get_dataset().prefetch(10000)
 
-    last_index = -1
-    reconstructed_tensor = []
 
-    original_index = 0
-
-    for e in ds:
-        index = e["symbol_index"].numpy()
-        assert(index == last_index+1)
-        last_index = index
-        assert(e["frequency_domain_IQ"].shape == (2,48))
-
-        t = e["frequency_domain_IQ"]
-        c = np.empty((t[0].shape[0] + t[1].shape[0]), dtype=np.single)
-        c[0::2] = t[0]
-        c[1::2] = t[1]
-        
-        reconstructed_tensor.extend(c)
-
-    
     with open(original_record_path, "rb") as f:
         buf = f.read()
         original_array = np.frombuffer(buf, dtype=np.single)
 
-    reconstructed_array = np.array(reconstructed_tensor, dtype=np.single)
+    ds = ds.map(lambda e: ( tf.reshape(
+            tf.stack( [e["frequency_domain_IQ"][0], e["frequency_domain_IQ"][1]] , axis=1),
+            [-1, 96]),
+        e["symbol_index"] ),
+        num_parallel_calls=10,
+        deterministic=False).prefetch(10000)
 
-    print(reconstructed_array)
-    print(original_array)
+    elements_checked = 0
+    for e in ds:
+        elements_checked += 96
+        assert(
+            np.array_equal( original_array[e[1]*96:e[1]*96+96], e[0][0] )
+        )
 
-    assert(np.array_equal(original_array, reconstructed_array))
+    assert(elements_checked == len(original_array) )
+
+    
+
+    # even_new = tf.constant([0,2,4])
+    # odd_new = tf.constant([1,3,5])
+    # print(even_new.shape)
+
+    # t = tf.stack([even_new, odd_new], axis=1)
+    # print(t)
+
+            # np.array_equal( original_array[e["symbol_index"]*96:e["symbol_index"]*96+96:2], e["frequency_domain_IQ"][0]) and
+            # np.array_equal( original_array[e["symbol_index"]*96+1:e["symbol_index"]*96+96:2], e["frequency_domain_IQ"][1])
+
+    # print(t)
 
     print("All checks passed")
