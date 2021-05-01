@@ -288,8 +288,8 @@ def check_if_symbol_datasets_are_equivalent(ds1, ds2):
 
 
 if __name__ == "__main__":
-    ds = symbol_dataset_from_file("/tmp/batched.ds", batch_size=1000)
+    ds = symbol_dataset_from_file("t1", batch_size=1)
     print(ds.element_spec)
 
     for e in ds:
-        print(e)
+        print(e[4])
