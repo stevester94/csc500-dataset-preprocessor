@@ -95,7 +95,7 @@ def symbol_dataset_from_file(path, batch_size):
     record_size=symbol_size + 1 + 1 + 1 + 8
     
     dataset = tf.data.FixedLengthRecordDataset(
-        path, record_bytes=record_size, header_bytes=None, footer_bytes=None, buffer_size=None,
+        path, record_bytes=record_size*batch_size, header_bytes=None, footer_bytes=None, buffer_size=None,
         compression_type=None, num_parallel_reads=1
     )
 
@@ -140,7 +140,6 @@ def symbol_dataset_from_file(path, batch_size):
     dataset = dataset.map(
         lambda x: (
             tf.strings.reduce_join(tf.slice(x, [0],                [symbol_size*batch_size])),
-            # tf.strings.reduce_join(tf.slice(x, [],                [1*batch_size])),
             tf.strings.reduce_join(tf.slice(x, [(symbol_size+0)*batch_size], [1*batch_size])), # Yes it's 0 because we are 0 indexed
             tf.strings.reduce_join(tf.slice(x, [(symbol_size+1)*batch_size], [1*batch_size])),
             tf.strings.reduce_join(tf.slice(x, [(symbol_size+2)*batch_size], [1*batch_size])),
@@ -225,10 +224,10 @@ def symbol_dataset_from_file(path, batch_size):
         dataset = dataset.map(
             lambda frequency_domain_IQ,day,transmitter_id,transmission_id,symbol_index_in_file: (
                 tf.reshape(frequency_domain_IQ, (batch_size,2,48)),
-                tf.reshape(day, (batch_size) ),
-                tf.reshape(transmitter_id, (batch_size) ),
-                tf.reshape(transmission_id, (batch_size) ),
-                tf.reshape(symbol_index_in_file, (batch_size) ),
+                tf.reshape(day, (batch_size,) ),
+                tf.reshape(transmitter_id, (batch_size,) ),
+                tf.reshape(transmission_id, (batch_size,) ),
+                tf.reshape(symbol_index_in_file, (batch_size,) ),
             ),
             num_parallel_calls=10,
             deterministic=True
@@ -289,18 +288,8 @@ def check_if_symbol_datasets_are_equivalent(ds1, ds2):
 
 
 if __name__ == "__main__":
-    ds_orig = vanilla_binary_file_to_symbol_dataset("../bin/day-1_transmitter-11_transmission-1.bin")
-    # symbol_dataset_to_file(ds, "t1")
-    ds_new  = symbol_dataset_from_file("t1", batch_size=1)
+    ds = symbol_dataset_from_file("/tmp/batched.ds", batch_size=1000)
+    print(ds.element_spec)
 
-    print(ds_orig.element_spec)
-    print(ds_new.element_spec)
-
-    # ds_orig = ds_orig.skip(1)
-
-    # f = None
-    # for e in ds_new:
-    #     print(e[4])
-
-
-    check_if_symbol_datasets_are_equivalent(ds_orig, ds_new)
+    for e in ds:
+        print(e)
