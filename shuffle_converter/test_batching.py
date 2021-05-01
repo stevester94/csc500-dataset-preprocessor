@@ -36,11 +36,10 @@ if __name__ == "__main__":
 
     unbatched = sys.argv[1]
 
-    # ds_orig = vanilla_binary_file_to_symbol_dataset("../bin/day-1_transmitter-11_transmission-1.bin")
     ds_unbatched = utils.symbol_dataset_from_file(unbatched, batch_size=1)
     ds_batched = ds_unbatched.batch(1000, drop_remainder=True)
 
-    # utils.symbol_dataset_to_file(ds_batched, "/tmp/batched.ds")
+    utils.symbol_dataset_to_file(ds_batched, "/tmp/batched.ds")
     ds_recovered = utils.symbol_dataset_from_file("/tmp/batched.ds", batch_size=1000)
 
     print(ds_recovered.element_spec)
@@ -48,4 +47,4 @@ if __name__ == "__main__":
     # utils.check_if_symbol_datasets_are_equivalent(ds_batched, ds_recovered)
     utils.check_if_symbol_datasets_are_equivalent(ds_unbatched, ds_recovered.unbatch())
 
-    # os.remove("/tmp/batched.ds")
+    os.remove("/tmp/batched.ds")
