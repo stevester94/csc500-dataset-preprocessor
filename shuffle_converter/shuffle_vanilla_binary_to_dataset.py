@@ -18,7 +18,7 @@ def get_unbatched_dataset_cardinality(ds):
 
     total = 0
     for e in ds:
-        total += e.shape()[0]
+        total += e[0].shape[0]
     
     return total
     
@@ -36,7 +36,9 @@ if __name__ == "__main__":
 
     # ds_orig = vanilla_binary_file_to_symbol_dataset("../bin/day-1_transmitter-11_transmission-1.bin")
     ds = utils.vanilla_binary_file_to_symbol_dataset(in_path)
-    ds_cardinality = get_dataset_cardinality(ds_in)
+    ds_cardinality = get_unbatched_dataset_cardinality(ds)
+
+    print("Items to process:", ds_cardinality)
 
     ds = ds.shuffle(ds_cardinality)
 

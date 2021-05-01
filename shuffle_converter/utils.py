@@ -10,6 +10,10 @@ import random
 import time
 import tensorflow as tf
 
+
+tf.random.set_seed(1337)
+
+
 def metadata_from_path(path):
     match  = re.search("day-([0-9]+)_transmitter-([0-9]+)_transmission-([0-9]+)", path)
     (day, transmitter_id, transmission_id) = match.groups()
@@ -248,7 +252,7 @@ def speed_test(iterable, batch_size=1):
             count = 0
 
 def check_if_symbol_datasets_are_equivalent(ds1, ds2):
-    ds = tf.data.Dataset.zip((ds_orig, ds_new))
+    ds = tf.data.Dataset.zip((ds1, ds2))
 
     ds = ds.map(
         lambda one, two: (
