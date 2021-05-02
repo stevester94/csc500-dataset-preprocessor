@@ -9,7 +9,7 @@ import multiprocessing as mp
 import random
 import time
 import tensorflow as tf
-
+import functools
 
 tf.random.set_seed(1337)
 
@@ -154,6 +154,11 @@ def vanilla_binary_file_to_symbol_dataset(
 
     return dataset
 
+def tensor_to_np_bytes(symbol):
+    members_as_bytes = [m.numpy().tobytes() for m in symbol]
+
+    return b''.join(members_as_bytes)
+    # return sum(members_as_bytes) # Nope
 
 def symbol_dataset_to_file(dataset, out_path):
     with open(out_path, "wb") as f:

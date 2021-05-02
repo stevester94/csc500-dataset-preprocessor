@@ -5,8 +5,9 @@ import os
 import utils
 import io
 from utils import symbol_dataset_from_file, get_file_size, symbol_tuple_from_bytes, get_files_with_suffix_in_dir, get_iterator_cardinality
-
-
+import utils
+import itertools
+import tensorflow as tf
 
 
 
@@ -127,14 +128,55 @@ def test(ds_path_1, ds_path_2):
     sys.exit(0)
 
 def print_usage():
-    print("Usage: <in dir of datasets> <out dir of shuffled and split datasets> <out batch size>")
+    print("Usage: <in dir of datasets> <out dir of shuffled and split datasets> <out batch size> <max file size in MiB>")
     print("       test <path of shuffled dataset file> <path of another shuffled dataset file>")
     print("")
 
+def batcher(generator, batch_size):
+    # def _batcher(g):
+    #     for i in g:
+    #         yield tf.convert_to_tensor(i)
+
+    # def _batcher(generator, batch_size):
+    #     while True:
+    #         yield list(itertools.islice(generator, batch_size))
+
+    while True:
+        # yield list(itertools.islice(_batcher(generator), batch_size))
+        # Items per second: 2870058.8476803065
+        # yield list(itertools.islice(generator, batch_size))
+
+        # 35406 Items/second It's the best I got
+        l = list(itertools.islice(generator, batch_size))
+
+        if len(l) < batch_size:
+            return # We've exhausted the generator, and we don't play with incomplete batches
+
+        frequency_domain_IQ = tf.convert_to_tensor([i[0] for i in l], dtype=np.float32)
+        day = tf.convert_to_tensor([i[1] for i in l], dtype=np.uint8)
+        transmitter_id = tf.convert_to_tensor([i[2] for i in l], dtype=np.uint8)
+        transmission_id = tf.convert_to_tensor([i[3] for i in l], dtype=np.uint8)
+        symbol_index_in_file = tf.convert_to_tensor([i[4] for i in l], dtype=np.int64)
+
+        yield (
+            frequency_domain_IQ,
+            day,
+            transmitter_id,
+            transmission_id,
+            symbol_index_in_file,
+        )
+
+
+
+
+BYTES_PER_MEBIBYTE = 1024*1024
+
+
 if __name__ == "__main__":
+    symbol_size = 384
+    record_size = symbol_size + 1 + 1 + 1 + 8
 
-
-    if len(sys.argv) != 4 and len(sys.argv) != 3:
+    if len(sys.argv) != 5 and len(sys.argv) != 3:
         print_usage()
         sys.exit(1)
 
@@ -147,13 +189,17 @@ if __name__ == "__main__":
         sys.exit(0)  
 
 
-    in_dir, out_dir, batch_size = sys.argv[1:]
+    in_dir, out_dir, batch_size, max_file_size_MiB = sys.argv[1:]
+    batch_size = int(batch_size)
+    max_file_size_Bytes = int(max_file_size_MiB) * BYTES_PER_MEBIBYTE
     
     dataset_paths = get_files_with_suffix_in_dir(in_dir, ".ds")
 
+    dataset_paths = dataset_paths[:4]
+
     print("Will operate on the following paths")
     print(dataset_paths)
-    input("Press Enter to continue...")
+    # input("Press Enter to continue...")
 
     gen = symbol_tuple_generator_wrapper(binary_random_chunk_generator(
         1337,
@@ -161,10 +207,65 @@ if __name__ == "__main__":
         record_size,
         disable_randomization=False
     ))
+    
+    # gen = binary_random_chunk_generator(
+    #     1337,
+    #     dataset_paths,
+    #     record_size,
+    #     disable_randomization=False
+    # )
 
+    # print(get_iterator_cardinality(gen))
+
+    # sys.exit(1)
 
     out_file_path_format_str = out_dir + "/shuffled_batch-{batch}_part-{part}.ds"
 
 
-    for batch in itertools.islice(gen):
-        pass
+
+    # 7000 items/sec
+    # ds = tf.data.Dataset.from_generator(
+    #     lambda: gen,
+    #     output_types= (
+    #         tf.float32,
+    #         tf.uint8,
+    #         tf.uint8,
+    #         tf.uint8,
+    #         tf.int64,
+    #     ),
+    #     output_shapes=(
+    #         (2,48),
+    #         (),
+    #         (),
+    #         (),
+    #         (),
+    #     )
+    # ).batch(2000)
+    # utils.speed_test(ds, 2000)
+    
+
+    # utils.speed_test(batcher(gen, batch_size), batch_size)
+
+    current_file_index = 0
+    current_file_size = 0
+    current_file = open(out_file_path_format_str.format(batch=batch_size, part=current_file_index), "wb")
+    for batch in batcher(gen, batch_size):
+        # bat = [b[0] for b in batch]
+        print(batch)
+        # t = tf.convert_to_tensor(batch)
+        b = utils.tensor_to_np_bytes(batch)
+
+        if len(b) != record_size*batch_size:
+            raise Exception("Expected {} bytes but got {} in buffer".format(record_size*batch_size, len(b)))
+
+        if current_file_size > max_file_size_Bytes:
+            current_file.close()
+            current_file_index += 1
+            current_file_size = 0
+            current_file = open(out_file_path_format_str.format(batch=batch_size, part=current_file_index), "wb")
+        
+        current_file.write(b)
+
+
+        print(">Implying")
+        
