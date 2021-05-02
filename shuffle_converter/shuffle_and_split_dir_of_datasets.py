@@ -195,11 +195,13 @@ if __name__ == "__main__":
     
     dataset_paths = get_files_with_suffix_in_dir(in_dir, ".ds")
 
-    dataset_paths = dataset_paths[:4]
+    # dataset_paths = dataset_paths[:4]
+
+    assert( record_size*batch_size <= max_file_size_Bytes )
 
     print("Will operate on the following paths")
     print(dataset_paths)
-    # input("Press Enter to continue...")
+    input("Press Enter to continue...")
 
     gen = symbol_tuple_generator_wrapper(binary_random_chunk_generator(
         1337,
@@ -251,21 +253,18 @@ if __name__ == "__main__":
     current_file = open(out_file_path_format_str.format(batch=batch_size, part=current_file_index), "wb")
     for batch in batcher(gen, batch_size):
         # bat = [b[0] for b in batch]
-        print(batch)
+        # print(batch)
         # t = tf.convert_to_tensor(batch)
         b = utils.tensor_to_np_bytes(batch)
 
         if len(b) != record_size*batch_size:
             raise Exception("Expected {} bytes but got {} in buffer".format(record_size*batch_size, len(b)))
 
-        if current_file_size > max_file_size_Bytes:
+        if current_file_size + len(b) > max_file_size_Bytes:
             current_file.close()
             current_file_index += 1
             current_file_size = 0
             current_file = open(out_file_path_format_str.format(batch=batch_size, part=current_file_index), "wb")
-        
+            print("Swapping to", out_file_path_format_str.format(batch=batch_size, part=current_file_index))
         current_file.write(b)
-
-
-        print(">Implying")
-        
+        current_file_size += len(b)
