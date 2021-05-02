@@ -13,6 +13,30 @@ import tensorflow as tf
 
 tf.random.set_seed(1337)
 
+def filter_datasets(self, paths, day_to_get, transmitter_id_to_get, transmission_id_to_get):
+    filtered_paths = paths
+    if self.day_to_get != "All":
+        assert(isinstance(self.day_to_get, list))
+        assert(len(self.day_to_get) > 0)
+        
+        filt = ["day-{}_".format(f) for f in self.day_to_get]
+        filtered_paths = [p for p in filtered_paths if self.is_any_word_in_string(filt, p)]
+
+    if self.transmitter_id_to_get != "All":
+        assert(isinstance(self.transmitter_id_to_get, list))
+        assert(len(self.transmitter_id_to_get) > 0)
+
+        filt = ["transmitter-{}_".format(f) for f in self.transmitter_id_to_get]
+        filtered_paths = [p for p in filtered_paths if self.is_any_word_in_string(filt, p)]
+
+    if self.transmission_id_to_get != "All":
+        assert(isinstance(self.transmission_id_to_get, list))
+        assert(len(self.transmission_id_to_get) > 0)
+
+        filt = ["transmission-{}.".format(f) for f in self.transmission_id_to_get]
+        filtered_paths = [p for p in filtered_paths if self.is_any_word_in_string(filt, p)]
+
+    return filtered_paths
 
 def metadata_from_path(path):
     match  = re.search("day-([0-9]+)_transmitter-([0-9]+)_transmission-([0-9]+)", path)
