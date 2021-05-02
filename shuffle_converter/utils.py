@@ -60,7 +60,9 @@ def vanilla_binary_file_to_symbol_dataset(
 
     dataset = dataset.map(
         lambda frequency_domain_IQ,day,transmitter_id,transmission_id,symbol_index_in_file: (
-            tf.reshape(frequency_domain_IQ, (2,48)),
+            # IQ is interleaved. This is known as fortran order, and is easy to do in numpy
+            # but is not directly supported in TF, so we do this BS
+            tf.transpose(tf.reshape(frequency_domain_IQ, (48,2))),
             tf.reshape(day, () ),
             tf.reshape(transmitter_id, () ),
             tf.reshape(transmission_id, () ),
