@@ -6,6 +6,11 @@ import utils
 import io
 from utils_2 import get_file_size, symbol_tuple_from_bytes, get_files_with_suffix_in_dir, get_iterator_cardinality
 from utils import symbol_dataset_from_file
+
+
+
+
+
 # Keep a big ol list of our paths and current offset, shuffle them with a seed. Randomly select one, open, read from offset, return the buffer.
 # Wrap this in a generator
 # Use itertools.islice and tf.convert_to_tensor
@@ -37,6 +42,11 @@ def binary_random_chunk_generator(seed, paths, chunk_length, disable_randomizati
         
         yield buf
 
+
+def symbol_tuple_generator_wrapper(gen):
+    for i in gen:
+        yield symbol_tuple_from_bytes(i)
+
 def test(ds_path_1, ds_path_2):
     symbol_size = 384
     record_size = symbol_size + 1 + 1 + 1 + 8
@@ -45,12 +55,12 @@ def test(ds_path_1, ds_path_2):
     ds = ds.concatenate(symbol_dataset_from_file(ds_path_2, batch_size=1))
 
     ds_iter = ds.as_numpy_iterator()
-    gen = binary_random_chunk_generator(
+    gen = symbol_tuple_generator_wrapper(binary_random_chunk_generator(
         1337,
         [ds_path_1, ds_path_2],
         record_size,
         disable_randomization=True
-    )
+    ))
 
 
     print("Getting cardinality...")
@@ -64,31 +74,31 @@ def test(ds_path_1, ds_path_2):
 
     # Rebuild our iterators since we exhausted them in the cardinality test
     ds_iter = ds.as_numpy_iterator()
-    gen = binary_random_chunk_generator(
+    gen = symbol_tuple_generator_wrapper(binary_random_chunk_generator(
         1337,
         [ds_path_1, ds_path_2],
         record_size,
         disable_randomization=True
-    )
+    ))
 
     print("Comparing all items")
-    for orig, new in zip(ds_iter, gen):
-        sym = symbol_tuple_from_bytes(new)
-
+    for orig, sym in zip(ds_iter, gen):
         assert( np.array_equal( orig[0], sym[0] ) )
         assert( np.array_equal( orig[1], sym[1] ) )
         assert( np.array_equal( orig[2], sym[2] ) )
         assert( np.array_equal( orig[3], sym[3] ) )
         assert( np.array_equal( orig[4], sym[4] ) )
 
-
+    #############################################
+    # Now test the randomization
+    #############################################
     ds_iter = ds.as_numpy_iterator()
-    gen = binary_random_chunk_generator(
+    gen = symbol_tuple_generator_wrapper(binary_random_chunk_generator(
         1337,
         [ds_path_1, ds_path_2],
         record_size,
         disable_randomization=False
-    )
+    ))
     print("Getting cardinality of randomized set")
     ds_cardinality = get_iterator_cardinality(ds_iter)
     gen_cardinality = get_iterator_cardinality(gen)
@@ -97,19 +107,17 @@ def test(ds_path_1, ds_path_2):
     assert(  ds_cardinality == gen_cardinality )
 
     ds_iter = ds.as_numpy_iterator()
-    gen = binary_random_chunk_generator(
+    gen = symbol_tuple_generator_wrapper(binary_random_chunk_generator(
         1337,
         [ds_path_1, ds_path_2],
         record_size,
         disable_randomization=False
-    )
+    ))
     test_pass = False
     print("Comparing all items again (this time randomized, so should 'fail' quickly)")
 
     # If we are truely randomizing this will fail quickly
-    for orig, new in zip(ds_iter, gen):
-        sym = symbol_tuple_from_bytes(new)
-
+    for orig, sym in zip(ds_iter, gen):
         if not np.array_equal( orig[0], sym[0] ):
             test_pass = True
             break
@@ -119,11 +127,10 @@ def test(ds_path_1, ds_path_2):
     print("Test Passed")
     sys.exit(0)
 
-
-
 def print_usage():
-    print("Usage: <in dir of datasets> <out dir of shuffled and split datasets>")
+    print("Usage: <in dir of datasets> <out dir of shuffled and split datasets> <out batch size>")
     print("       test <path of shuffled dataset file> <path of another shuffled dataset file>")
+    print("")
 
 if __name__ == "__main__":
 
@@ -136,18 +143,28 @@ if __name__ == "__main__":
         test(sys.argv[2], sys.argv[3])
         sys.exit(0)
 
-    in_dir, out_dir = sys.argv[1:]
+    if sys.argv[1] == "help":
+        print_usage()
+        sys.exit(0)  
+
+
+    in_dir, out_dir, batch_size = sys.argv[1:]
     
     dataset_paths = get_files_with_suffix_in_dir(in_dir, ".ds")
 
-    gen = binary_random_chunk_generator(
+    print("Will operate on the following paths")
+    print(dataset_paths)
+    input("Press Enter to continue...")
+
+    gen = symbol_tuple_generator_wrapper(binary_random_chunk_generator(
         1337,
         dataset_paths,
         record_size,
-        disable_randomization=True
-    )
+        disable_randomization=False
+    ))
 
-    for b in gen:
-        t = symbol_tuple_from_bytes(b)
-        print(t[4])
-        # print(b)
+
+    out_file_path_format_str = out_dir + "/shuffled_batch-{batch}_part-{part}.ds"
+
+
+    for batch in itertools.islice(gen):
