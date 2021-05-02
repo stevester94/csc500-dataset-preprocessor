@@ -10,6 +10,7 @@ parallelization=8
 count=0
 
 echo set -eou pipefail
+echo mkdir -p $out_path
 for f_in in $(ls $in_path/*bin); do
     base_name=$(basename $f_in)
     base_name=${base_name%.bin}
