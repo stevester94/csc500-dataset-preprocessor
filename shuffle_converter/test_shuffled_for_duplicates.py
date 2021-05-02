@@ -35,34 +35,23 @@ def check_for_duplicates(shuffled_dir,batch_size):
     ).unbatch()
 
 
-    top = [[] for _ in range(30)]
-    for day in top:
-        day.extend([[] for _ in range(30)])
-
-    for day in top:
-        for transmitter_id in day:
-            transmitter_id.extend([[] for _ in range(30)])
-
-
-
-    # print(top[3][15][2])
-    # print(top[0][0][0])
+    all_combos = []
 
     count = 0
     for e in dataset:
-        day, transmitter_id, transmission_id, symbol_index_in_file = e
-        # print(day, transmitter_id, transmission_id, symbol_index_in_file)
-        top[day][transmitter_id][transmission_id].append(int(symbol_index_in_file.numpy()))
+        inted = (
+            int(e[0].numpy()),
+            int(e[1].numpy()),
+            int(e[2].numpy()),
+            int(e[3].numpy()),
+        )
+        all_combos.append(inted)
 
-        if count % 10000:
+        if count % 10000 == 0:
             print(count)
+        count += 1
 
-    for day in top:
-        for transmitter_id in day:
-            for transmission_id in transmitter_id:
-                assert( len(transmission_id) == len(set(transmission_id)))
-
-    print(top)
+    assert( len(all_combos) == len(set(all_combos)))
 
     print("Test Passed")
 

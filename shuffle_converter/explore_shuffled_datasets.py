@@ -32,6 +32,7 @@ if __name__ == "__main__":
     for p in dataset_paths:
         assert( "batch-{}".format(batch_size) in p )
 
+    dataset_paths = dataset_paths[:20]
     print(dataset_paths)
     # input("Press enter to continue")
 
@@ -40,14 +41,14 @@ if __name__ == "__main__":
 
     dataset = dataset.interleave(
         lambda path: utils.symbol_dataset_from_file(path, batch_size),
-        cycle_length=MAX_FD, 
+        cycle_length=5, 
         block_length=1,
         deterministic=True
-    )
+    ).unbatch().filter(lambda a,day,c,d,e: day > 0).batch(100)
 
-    # utils.speed_test(dataset, 100)
-
-    ar = []
+    # No filtering: Items per second: 278111.05069821107
+    # Filtering: Items per second: 55959.64366670536
+    utils.speed_test(dataset, batch_size)
 
     while True:
         first = True
