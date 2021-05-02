@@ -4,8 +4,7 @@ import sys
 import os
 import utils
 import io
-from utils_2 import get_file_size, symbol_tuple_from_bytes, get_files_with_suffix_in_dir, get_iterator_cardinality
-from utils import symbol_dataset_from_file
+from utils import symbol_dataset_from_file, get_file_size, symbol_tuple_from_bytes, get_files_with_suffix_in_dir, get_iterator_cardinality
 
 
 
@@ -168,3 +167,4 @@ if __name__ == "__main__":
 
 
     for batch in itertools.islice(gen):
+        pass
