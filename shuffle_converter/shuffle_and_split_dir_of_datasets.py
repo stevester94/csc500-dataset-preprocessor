@@ -4,8 +4,9 @@ import sys
 import os
 import utils
 import io
-from utils import symbol_dataset_from_file, get_file_size, symbol_tuple_from_bytes, get_files_with_suffix_in_dir, get_iterator_cardinality
-import utils
+# from utils import utils.symbol_dataset_from_file, utils.get_file_size, utils.symbol_tuple_from_bytes, utils.get_files_with_suffix_in_dir, utils.get_iterator_cardinality
+
+from steves_utils import utils
 import itertools
 import tensorflow as tf
 
@@ -19,7 +20,7 @@ def binary_random_chunk_generator(seed, paths, chunk_length, disable_randomizati
     rng = np.random.default_rng(seed)
 
     # The path, current offset, total size of file
-    containers = [[path, 0, get_file_size(path)] for path in paths]
+    containers = [[path, 0, utils.get_file_size(path)] for path in paths]
 
     for c in containers:
         if c[2] % chunk_length != 0:
@@ -45,14 +46,14 @@ def binary_random_chunk_generator(seed, paths, chunk_length, disable_randomizati
 
 def symbol_tuple_generator_wrapper(gen):
     for i in gen:
-        yield symbol_tuple_from_bytes(i)
+        yield utils.symbol_tuple_from_bytes(i)
 
 def test(ds_path_1, ds_path_2):
     symbol_size = 384
     record_size = symbol_size + 1 + 1 + 1 + 8
 
-    ds = symbol_dataset_from_file(ds_path_1, batch_size=1)
-    ds = ds.concatenate(symbol_dataset_from_file(ds_path_2, batch_size=1))
+    ds = utils.symbol_dataset_from_file(ds_path_1, batch_size=1)
+    ds = ds.concatenate(utils.symbol_dataset_from_file(ds_path_2, batch_size=1))
 
     ds_iter = ds.as_numpy_iterator()
     gen = symbol_tuple_generator_wrapper(binary_random_chunk_generator(
@@ -64,8 +65,8 @@ def test(ds_path_1, ds_path_2):
 
 
     print("Getting cardinality...")
-    ds_cardinality = get_iterator_cardinality(ds_iter)
-    gen_cardinality = get_iterator_cardinality(gen)
+    ds_cardinality = utils.get_iterator_cardinality(ds_iter)
+    gen_cardinality = utils.get_iterator_cardinality(gen)
 
     print("ds_cardinality:", ds_cardinality)
     print("gen_cardinality:", gen_cardinality)
@@ -100,8 +101,8 @@ def test(ds_path_1, ds_path_2):
         disable_randomization=False
     ))
     print("Getting cardinality of randomized set")
-    ds_cardinality = get_iterator_cardinality(ds_iter)
-    gen_cardinality = get_iterator_cardinality(gen)
+    ds_cardinality = utils.get_iterator_cardinality(ds_iter)
+    gen_cardinality = utils.get_iterator_cardinality(gen)
     print("ds_cardinality:", ds_cardinality)
     print("gen_cardinality:", gen_cardinality)
     assert(  ds_cardinality == gen_cardinality )
@@ -128,19 +129,11 @@ def test(ds_path_1, ds_path_2):
     sys.exit(0)
 
 def print_usage():
-    print("Usage: <in dir of datasets> <out dir of shuffled and split datasets> <out batch size> <max file size in MiB>")
+    print("Usage: <in dir of shuffled datasets> <out dir of shuffled and split datasets> <out batch size> <max file size in MiB>")
     print("       test <path of shuffled dataset file> <path of another shuffled dataset file>")
     print("")
 
 def batcher(generator, batch_size):
-    # def _batcher(g):
-    #     for i in g:
-    #         yield tf.convert_to_tensor(i)
-
-    # def _batcher(generator, batch_size):
-    #     while True:
-    #         yield list(itertools.islice(generator, batch_size))
-
     while True:
         # yield list(itertools.islice(_batcher(generator), batch_size))
         # Items per second: 2870058.8476803065
@@ -193,15 +186,31 @@ if __name__ == "__main__":
     batch_size = int(batch_size)
     max_file_size_Bytes = int(max_file_size_MiB) * BYTES_PER_MEBIBYTE
     
-    dataset_paths = get_files_with_suffix_in_dir(in_dir, ".ds")
+    dataset_paths = utils.get_files_with_suffix_in_dir(in_dir, ".ds")
+    dataset_paths = utils.filter_paths(dataset_paths,
+        day_to_get=[1]
+    )
 
-    # dataset_paths = dataset_paths[:4]
+    total_records = int(sum(
+            [utils.get_file_size(f) for f in dataset_paths]
+        )/record_size
+    )
+
+    out_file_path_format_str = out_dir + "/day-1_shuffled_batch-{batch}_part-{part}.ds"
+
 
     assert( record_size*batch_size <= max_file_size_Bytes )
 
-    print("Will operate on the following paths")
-    print(dataset_paths)
-    input("Press Enter to continue...")
+    print("========= pre-run summary =========")
+    print("Will operate on the following paths:",dataset_paths)
+    print("total_records:", total_records)
+    print("in_dir:", in_dir)
+    print("out_dir:",out_dir)
+    print("out_batch_size:", batch_size)
+    print("max_file_size_MiB:", int(max_file_size_Bytes / BYTES_PER_MEBIBYTE))
+    print("file_format_str:", out_file_path_format_str)
+
+    input("Press enter to continue")
 
     gen = symbol_tuple_generator_wrapper(binary_random_chunk_generator(
         1337,
@@ -210,43 +219,9 @@ if __name__ == "__main__":
         disable_randomization=False
     ))
     
-    # gen = binary_random_chunk_generator(
-    #     1337,
-    #     dataset_paths,
-    #     record_size,
-    #     disable_randomization=False
-    # )
-
-    # print(get_iterator_cardinality(gen))
-
-    # sys.exit(1)
-
-    out_file_path_format_str = out_dir + "/shuffled_batch-{batch}_part-{part}.ds"
 
 
 
-    # 7000 items/sec
-    # ds = tf.data.Dataset.from_generator(
-    #     lambda: gen,
-    #     output_types= (
-    #         tf.float32,
-    #         tf.uint8,
-    #         tf.uint8,
-    #         tf.uint8,
-    #         tf.int64,
-    #     ),
-    #     output_shapes=(
-    #         (2,48),
-    #         (),
-    #         (),
-    #         (),
-    #         (),
-    #     )
-    # ).batch(2000)
-    # utils.speed_test(ds, 2000)
-    
-
-    # utils.speed_test(batcher(gen, batch_size), batch_size)
 
     current_file_index = 0
     current_file_size = 0
