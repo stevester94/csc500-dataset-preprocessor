@@ -188,7 +188,8 @@ if __name__ == "__main__":
     
     dataset_paths = utils.get_files_with_suffix_in_dir(in_dir, ".ds")
     dataset_paths = utils.filter_paths(dataset_paths,
-        day_to_get=[1]
+        day_to_get=[3,4],
+        transmitter_id_to_get=[1,2,3,4,5]
     )
 
     total_records = int(sum(
