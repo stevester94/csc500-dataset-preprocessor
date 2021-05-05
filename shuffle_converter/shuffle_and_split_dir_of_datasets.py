@@ -188,8 +188,13 @@ if __name__ == "__main__":
     
     dataset_paths = utils.get_files_with_suffix_in_dir(in_dir, ".ds")
     dataset_paths = utils.filter_paths(dataset_paths,
-        day_to_get=[3,4],
-        transmitter_id_to_get=[1,2,3,4,5]
+        # day_to_get=[1,2,3],
+        # transmitter_id_to_get=[1,2,3,4,5]
+        # day_to_get=[1],
+        # transmitter_id_to_get=[1,2,3,4,5
+        day_to_get=[1],
+        transmitter_id_to_get=[10,11],
+        # transmission_id_to_get=[1],
     )
 
     total_records = int(sum(
@@ -197,7 +202,7 @@ if __name__ == "__main__":
         )/record_size
     )
 
-    out_file_path_format_str = out_dir + "/day-1_shuffled_batch-{batch}_part-{part}.ds"
+    out_file_path_format_str = out_dir + "/day-1_transmitters-10--11_shuffled_batch-{batch}_part-{part}.ds"
 
 
     assert( record_size*batch_size <= max_file_size_Bytes )
@@ -210,6 +215,7 @@ if __name__ == "__main__":
     print("out_batch_size:", batch_size)
     print("max_file_size_MiB:", int(max_file_size_Bytes / BYTES_PER_MEBIBYTE))
     print("file_format_str:", out_file_path_format_str)
+    print("Total disk needed (MiB):", total_records * record_size / BYTES_PER_MEBIBYTE)
 
     input("Press enter to continue")
 

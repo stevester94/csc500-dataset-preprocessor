@@ -54,13 +54,19 @@ if __name__ == "__main__":
         first = True
         count = 0
         for e in train_ds:
-            count += e[0].shape[0]
-            if first:
-                first = False
-                print(e[4][0])
-        for e in val_ds:
-            pass
-        print("Items:",count)
+            print(e[4])
+
+    # while True:
+    #     first = True
+    #     count = 0
+    #     for e in train_ds:
+    #         count += e[0].shape[0]
+    #         if first:
+    #             first = False
+    #             print(e[4][0])
+    #     for e in val_ds:
+    #         pass
+    #     print("Items:",count)
             
 
 
