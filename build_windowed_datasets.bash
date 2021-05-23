@@ -6,14 +6,10 @@ source_dataset_path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/all_shuffled
 source_dataset_samples_per_chunk="512"
 output_batch_size="100"
 seed="1337"
-# num_windowed_examples_per_device="200000"
-# num_val_examples_per_device="10000"
-# num_test_examples_per_device="50000"
-# output_max_file_size_MB="100"
-num_windowed_examples_per_device="2000"
-num_val_examples_per_device="1000"
-num_test_examples_per_device="5000"
-output_max_file_size_MB="1"
+num_windowed_examples_per_device="200000"
+num_val_examples_per_device="10000"
+num_test_examples_per_device="50000"
+output_max_file_size_MB="100"
 output_window_size="128"
 
         # "distances_to_filter_on": [
