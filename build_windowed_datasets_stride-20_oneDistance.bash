@@ -25,8 +25,33 @@ output_window_size="128"
         #     56,
         #     62
         # ],
+# (
+#     working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-8/"
+#     mkdir -p $working_dir &&
+#     cd $shuffler_dir_path &&
+#     # cat << EOF
+#     cat << EOF | ./windowed_dataset_shuffler.py -
+#     {
+#         "input_shuffled_ds_dir": "$source_dataset_path",
+#         "input_shuffled_ds_num_samples_per_chunk": $source_dataset_samples_per_chunk,
+#         "output_batch_size": $output_batch_size,
+#         "seed": $seed,
+#         "num_windowed_examples_per_device": $num_windowed_examples_per_device,
+#         "num_val_examples_per_device": $num_val_examples_per_device,
+#         "num_test_examples_per_device": $num_test_examples_per_device,
+#         "output_max_file_size_MB": $output_max_file_size_MB,
+#         "distances_to_filter_on": [
+#             8
+#         ],
+#         "output_window_size": $output_window_size, 
+#         "working_dir": "$working_dir",
+#         "stride_length": 20
+#     }
+# EOF
+# )
+
 (
-    working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-8/"
+    working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-8_FUCK/"
     mkdir -p $working_dir &&
     cd $shuffler_dir_path &&
     # cat << EOF
@@ -48,82 +73,105 @@ output_window_size="128"
         "stride_length": 20
     }
 EOF
-) &
-
-(
-    working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-26/"
-    mkdir -p $working_dir &&
-    cd $shuffler_dir_path &&
-    # cat << EOF
-    cat << EOF | ./windowed_dataset_shuffler.py -
-    {
-        "input_shuffled_ds_dir": "$source_dataset_path",
-        "input_shuffled_ds_num_samples_per_chunk": $source_dataset_samples_per_chunk,
-        "output_batch_size": $output_batch_size,
-        "seed": $seed,
-        "num_windowed_examples_per_device": $num_windowed_examples_per_device,
-        "num_val_examples_per_device": $num_val_examples_per_device,
-        "num_test_examples_per_device": $num_test_examples_per_device,
-        "output_max_file_size_MB": $output_max_file_size_MB,
-        "distances_to_filter_on": [
-            26
-        ],
-        "output_window_size": $output_window_size, 
-        "working_dir": "$working_dir",
-        "stride_length": 20
-    }
-EOF
-) &
-
-wait
-
-(
-    working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-44/"
-    mkdir -p $working_dir &&
-    cd $shuffler_dir_path &&
-    # cat << EOF
-    cat << EOF | ./windowed_dataset_shuffler.py -
-    {
-        "input_shuffled_ds_dir": "$source_dataset_path",
-        "input_shuffled_ds_num_samples_per_chunk": $source_dataset_samples_per_chunk,
-        "output_batch_size": $output_batch_size,
-        "seed": $seed,
-        "num_windowed_examples_per_device": $num_windowed_examples_per_device,
-        "num_val_examples_per_device": $num_val_examples_per_device,
-        "num_test_examples_per_device": $num_test_examples_per_device,
-        "output_max_file_size_MB": $output_max_file_size_MB,
-        "distances_to_filter_on": [
-            44
-        ],
-        "output_window_size": $output_window_size, 
-        "working_dir": "$working_dir",
-        "stride_length": 20
-    }
-EOF
 )
 
+# (
+#     working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-20/"
+#     mkdir -p $working_dir &&
+#     cd $shuffler_dir_path &&
+#     # cat << EOF
+#     cat << EOF | ./windowed_dataset_shuffler.py -
+#     {
+#         "input_shuffled_ds_dir": "$source_dataset_path",
+#         "input_shuffled_ds_num_samples_per_chunk": $source_dataset_samples_per_chunk,
+#         "output_batch_size": $output_batch_size,
+#         "seed": $seed,
+#         "num_windowed_examples_per_device": $num_windowed_examples_per_device,
+#         "num_val_examples_per_device": $num_val_examples_per_device,
+#         "num_test_examples_per_device": $num_test_examples_per_device,
+#         "output_max_file_size_MB": $output_max_file_size_MB,
+#         "distances_to_filter_on": [
+#             20
+#         ],
+#         "output_window_size": $output_window_size, 
+#         "working_dir": "$working_dir",
+#         "stride_length": 20
+#     }
+# EOF
+# )
 
-(
-    working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-62/"
-    mkdir -p $working_dir &&
-    cd $shuffler_dir_path &&
-    # cat << EOF
-    cat << EOF | ./windowed_dataset_shuffler.py -
-    {
-        "input_shuffled_ds_dir": "$source_dataset_path",
-        "input_shuffled_ds_num_samples_per_chunk": $source_dataset_samples_per_chunk,
-        "output_batch_size": $output_batch_size,
-        "seed": $seed,
-        "num_windowed_examples_per_device": $num_windowed_examples_per_device,
-        "num_val_examples_per_device": $num_val_examples_per_device,
-        "num_test_examples_per_device": $num_test_examples_per_device,
-        "output_max_file_size_MB": $output_max_file_size_MB,
-        "distances_to_filter_on": [
-            62
-        ],
-        "output_window_size": $output_window_size, 
-        "working_dir": "$working_dir",
-        "stride_length": 20
-    }
-EOF
-)
+# (
+#     working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-26/"
+#     mkdir -p $working_dir &&
+#     cd $shuffler_dir_path &&
+#     # cat << EOF
+#     cat << EOF | ./windowed_dataset_shuffler.py -
+#     {
+#         "input_shuffled_ds_dir": "$source_dataset_path",
+#         "input_shuffled_ds_num_samples_per_chunk": $source_dataset_samples_per_chunk,
+#         "output_batch_size": $output_batch_size,
+#         "seed": $seed,
+#         "num_windowed_examples_per_device": $num_windowed_examples_per_device,
+#         "num_val_examples_per_device": $num_val_examples_per_device,
+#         "num_test_examples_per_device": $num_test_examples_per_device,
+#         "output_max_file_size_MB": $output_max_file_size_MB,
+#         "distances_to_filter_on": [
+#             26
+#         ],
+#         "output_window_size": $output_window_size, 
+#         "working_dir": "$working_dir",
+#         "stride_length": 20
+#     }
+# EOF
+# )
+
+# (
+#     working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-44/"
+#     mkdir -p $working_dir &&
+#     cd $shuffler_dir_path &&
+#     # cat << EOF
+#     cat << EOF | ./windowed_dataset_shuffler.py -
+#     {
+#         "input_shuffled_ds_dir": "$source_dataset_path",
+#         "input_shuffled_ds_num_samples_per_chunk": $source_dataset_samples_per_chunk,
+#         "output_batch_size": $output_batch_size,
+#         "seed": $seed,
+#         "num_windowed_examples_per_device": $num_windowed_examples_per_device,
+#         "num_val_examples_per_device": $num_val_examples_per_device,
+#         "num_test_examples_per_device": $num_test_examples_per_device,
+#         "output_max_file_size_MB": $output_max_file_size_MB,
+#         "distances_to_filter_on": [
+#             44
+#         ],
+#         "output_window_size": $output_window_size, 
+#         "working_dir": "$working_dir",
+#         "stride_length": 20
+#     }
+# EOF
+# )
+
+
+# (
+#     working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-62/"
+#     mkdir -p $working_dir &&
+#     cd $shuffler_dir_path &&
+#     # cat << EOF
+#     cat << EOF | ./windowed_dataset_shuffler.py -
+#     {
+#         "input_shuffled_ds_dir": "$source_dataset_path",
+#         "input_shuffled_ds_num_samples_per_chunk": $source_dataset_samples_per_chunk,
+#         "output_batch_size": $output_batch_size,
+#         "seed": $seed,
+#         "num_windowed_examples_per_device": $num_windowed_examples_per_device,
+#         "num_val_examples_per_device": $num_val_examples_per_device,
+#         "num_test_examples_per_device": $num_test_examples_per_device,
+#         "output_max_file_size_MB": $output_max_file_size_MB,
+#         "distances_to_filter_on": [
+#             62
+#         ],
+#         "output_window_size": $output_window_size, 
+#         "working_dir": "$working_dir",
+#         "stride_length": 20
+#     }
+# EOF
+# )
