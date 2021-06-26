@@ -114,8 +114,35 @@ output_window_size="128"
 # EOF
 # )
 
+# (
+#     working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-2.8/"
+#     mkdir -p $working_dir &&
+#     cd $shuffler_dir_path &&
+#     # cat << EOF
+#     cat << EOF | ./windowed_dataset_shuffler.py -
+#     {
+#         "input_shuffled_ds_dir": "$source_dataset_path",
+#         "input_shuffled_ds_num_samples_per_chunk": $source_dataset_samples_per_chunk,
+#         "output_batch_size": $output_batch_size,
+#         "seed": $seed,
+#         "num_windowed_examples_per_device": $num_windowed_examples_per_device,
+#         "num_val_examples_per_device": $num_val_examples_per_device,
+#         "num_test_examples_per_device": $num_test_examples_per_device,
+#         "output_max_file_size_MB": $output_max_file_size_MB,
+#         "distances_to_filter_on": [
+#             2,
+#             8
+#         ],
+#         "output_window_size": $output_window_size, 
+#         "working_dir": "$working_dir",
+#         "stride_length": 20
+#     }
+# EOF
+# )
+
 (
-    working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-2.8/"
+    working_dir="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/automated_windower/windowed_EachDevice-200k_batch-100_stride-20_distances-2.8.14.20.26.32/"
+                
     mkdir -p $working_dir &&
     cd $shuffler_dir_path &&
     # cat << EOF
@@ -131,7 +158,11 @@ output_window_size="128"
         "output_max_file_size_MB": $output_max_file_size_MB,
         "distances_to_filter_on": [
             2,
-            8
+            8,
+            14,
+            20,
+            26,
+            32
         ],
         "output_window_size": $output_window_size, 
         "working_dir": "$working_dir",
