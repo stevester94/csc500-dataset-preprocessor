@@ -66,6 +66,7 @@ def generate_pickle(
     out_path,
 ):
     d = {}
+    rng = np.random.default_rng(seed)
     for distance in distances:
         d[distance] = {}
         for serial in serial_numbers:
@@ -77,7 +78,7 @@ def generate_pickle(
                     num_floats_in_window=num_floats_in_window,
                     window_stride=window_stride,
                     num_windows=num_windows,
-                    np_rng=np.random.default_rng(seed)
+                    np_rng=rng
                 )
 
                 d[distance][serial] = ar
