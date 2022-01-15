@@ -15,7 +15,7 @@ from steves_utils.ORACLE.utils_v2 import (
     serial_number_to_id
 )
 
-from steves_utils.utils_v2 import numpy_to_hash
+from steves_utils.utils_v2 import to_hash
 from create_oracle import generate_pickle
 
 class Test_ORACLE_Pickle(unittest.TestCase):
@@ -54,7 +54,7 @@ class Test_ORACLE_Pickle(unittest.TestCase):
             for label, all_x in label_and_x_d.items():
                 for window in all_x:
                     h.append(
-                        numpy_to_hash(window)
+                        to_hash(window)
                     )
         
         self.assertEqual(
