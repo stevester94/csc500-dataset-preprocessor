@@ -109,5 +109,5 @@ if __name__ == "__main__":
         window_stride=50,
         num_windows=10000,
         seed=1337,
-        out_path="oracle.pkl",
+        out_path="oracle.stratified_ds.2022A.pkl",
     )

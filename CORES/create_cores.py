@@ -68,5 +68,5 @@ if __name__ == "__main__":
         seed=1337,
         days=ALL_DAYS,
         nodes=ALL_NODES,
-        out_path="cores.pkl"
+        out_path="cores.stratified_ds.2022A.pkl"
     )
