@@ -83,7 +83,22 @@ def generate_pickle(
 
                 d[distance][serial] = ar
 
-    pickle.dump(d, open(out_path, "wb"))
+    metadata = {
+        "serial_numbers": serial_numbers,
+        "runs": runs,
+        "distances": distances,
+        "num_floats_in_window": num_floats_in_window,
+        "window_stride": window_stride,
+        "num_windows": num_windows,
+        "seed": seed,
+    }
+    out = {
+        "metadata": metadata,
+        "data": d
+    }
+
+    with open(out_path, "wb") as f:
+        pickle.dump(out, f)
 
 if __name__ == "__main__":
     generate_pickle(
