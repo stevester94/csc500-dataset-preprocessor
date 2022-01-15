@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+from importlib.metadata import metadata
 import pickle
 import os
 import numpy as np
@@ -42,8 +43,24 @@ def generate_pickle(
                     But we want 2,256
                     """
                     d[day][node].append(x.T)
+            
+            # Stack it all into one big np array
+            d[day][node] = np.stack(d[day][node])
     
-    pickle.dump(d, open(out_path, "wb"))
+
+    metadata = {
+        "seed": seed,
+        "days": days,
+        "nodes": nodes,
+    }
+
+    out = {
+        "data": d,
+        "metadata": metadata
+    }
+
+    with open(out_path, "wb") as f:
+        pickle.dump(out, f)
 
             
 if __name__ == "__main__":
