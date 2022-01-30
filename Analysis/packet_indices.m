@@ -1,3 +1,4 @@
+
 f = fopen("/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/14ft/WiFi_air_X310_3123D52_14ft_run1.sigmf-data",'r');
 % f = fopen("/mnt/wd500GB/CSC500/csc500-super-repo/csc500-dataset-preprocessor/Analysis/cores_one.bin");
 % f = fopen("5_fake_packets.bin");
@@ -19,6 +20,7 @@ offset = 0;
 threshold = 1.0;
 bandwidth=5e6;
 [startOffset,M] = wlanPacketDetect(rx,"CBW20", offset,threshold);
+% [startOffset,M] = wlanPacketDetect(rx,"CBW5", offset,threshold);
 display(startOffset);
 % plot(M)
 xlabel('Samples')
@@ -26,21 +28,21 @@ ylabel('Decision Statistics')
 
 indices = [];
 offset = 1;
-max_search=20000;
+max_search=100000; % kinda bogus: matlab will still do an exhaustive search even if only one index requested in find
 while 1
-    start = find(M(offset:end) > 0.99, 1);
+    start = find(M(offset:offset+max_search) > 0.99, 1);
     
     if isempty(start)
-        display("No start found");
+        disp("No start found");
         break;
     end
     
     start = start(1)+offset-1;
     offset = start;
-    finish = find(M(offset:end) < 0.5, 1);
+    finish = find(M(offset:offset+max_search) < 0.5, 1);
 
     if isempty(finish)
-        display("No finish found");
+        disp("No finish found");
         break;
     end
 
@@ -50,13 +52,3 @@ while 1
     indices(end+1) = start;
     display(start);
 end
-
-
-% while 1
-%     
-% 
-% end
-
-
-
-return;
