@@ -22,8 +22,13 @@ function indices = get_80211a_indices(path)
     offset = 1;
     max_search=100000; % kinda bogus: matlab will still do an exhaustive search even if only one index requested in find
     while 1
+        % WiFi_air_X310_3123D64_56ft_run1.sigmf-datahas plateaus of ~0.8
+        % I am not sure how
+        % matlab is calculating this, but to accomodate this we drop the
+        % threshold of our packet isolator. Note how this has nothing to do
+        % with the threshold arg of wlanPacketDetect
         end_find = min([offset+max_search, length(M)]);
-        start = find(M(offset:end_find) > 0.99, 1);
+        start = find(M(offset:end_find) > 0.80, 1);
         
         if isempty(start)
             break;
