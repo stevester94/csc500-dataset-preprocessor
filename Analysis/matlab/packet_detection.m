@@ -1,4 +1,21 @@
-path = "/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/14ft/WiFi_air_X310_3123D52_14ft_run1.sigmf-data"
+% path = "/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/14ft/WiFi_air_X310_3123D52_14ft_run1.sigmf-data";
+% path = "/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/32ft/WiFi_air_X310_3123D64_32ft_run1.sigmf-data";
+% path = "/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/32ft/WiFi_air_X310_3123D70_32ft_run2.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/32ft/WiFi_air_X310_3123D89_32ft_run1.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/38ft/WiFi_air_X310_3123D70_38ft_run1.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/38ft/WiFi_air_X310_3123D79_38ft_run1.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/44ft/WiFi_air_X310_3123D52_44ft_run2.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/44ft/WiFi_air_X310_3123D54_44ft_run2.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/44ft/WiFi_air_X310_3123D7E_44ft_run2.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/44ft/WiFi_air_X310_3123D89_44ft_run2.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/44ft/WiFi_air_X310_3124E4A_44ft_run1.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/50ft/WiFi_air_X310_3123D76_50ft_run2.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/50ft/WiFi_air_X310_3124E4A_50ft_run1.sigmf-data";
+
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/56ft/WiFi_air_X310_3123D64_56ft_run1.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/56ft/WiFi_air_X310_3123D70_56ft_run2.sigmf-data";
+
+path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/2ft/WiFi_air_X310_3123D58_2ft_run1.sigmf-data";
 f = fopen(path,'r');
 
 % f = fopen("/mnt/wd500GB/CSC500/csc500-super-repo/csc500-dataset-preprocessor/Analysis/cores_one.bin");
