@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import pickle
+from random import seed
 import numpy as np
 
 from steves_utils.ORACLE.utils_v2 import (
@@ -13,7 +14,10 @@ from steves_utils.ORACLE.utils_v2 import (
     serial_number_to_id
 )
 
+from steves_utils.stratified_dataset.stratified_dataset_builder import Stratified_Dataset_Builder
+
 from steves_utils import file_as_windowed_list
+
 
 
 def get_single_oracle_combo(
@@ -55,59 +59,65 @@ def get_single_oracle_combo(
         list(windows)
     )
 
-def generate_pickle(
-    serial_numbers,
-    runs,
-    distances,
-    num_floats_in_window,
-    window_stride,
-    num_windows,
-    seed,
-    out_path,
-):
-    d = {}
-    rng = np.random.default_rng(seed)
-    for distance in distances:
-        d[distance] = {}
-        for serial in serial_numbers:
-            for run in runs:
-                ar = get_single_oracle_combo(
-                    desired_serial_number=serial,
-                    desired_run=run,
-                    desired_distance=distance,
-                    num_floats_in_window=num_floats_in_window,
-                    window_stride=window_stride,
-                    num_windows=num_windows,
-                    np_rng=rng
-                )
+class ORACLE_SDB(Stratified_Dataset_Builder):
+    def __init__(
+        self,
+        num_floats_in_window:int,
+        window_stride:int,
+        num_windows:int,
+        runs:list,
+    ) -> None:
+        super().__init__()
+        self.num_floats_in_window = num_floats_in_window
+        self.window_stride        = window_stride
+        self.num_windows          = num_windows
+        self.runs                 = runs
+    
+    def build_dataset(self, seed: int, domains: list, labels: list, out_path: str):
+        d = {}
+        rng = np.random.default_rng(seed)
+        for distance in domains:
+            d[distance] = {}
+            for serial in labels:
+                for run in self.runs:
+                    ar = get_single_oracle_combo(
+                        desired_serial_number=serial,
+                        desired_run=run,
+                        desired_distance=distance,
+                        num_floats_in_window=self.num_floats_in_window,
+                        window_stride=self.window_stride,
+                        num_windows=self.num_windows,
+                        np_rng=rng
+                    )
 
-                d[distance][serial] = ar
+                    d[distance][serial] = ar
 
-    metadata = {
-        "serial_numbers": serial_numbers,
-        "runs": runs,
-        "distances": distances,
-        "num_floats_in_window": num_floats_in_window,
-        "window_stride": window_stride,
-        "num_windows": num_windows,
-        "seed": seed,
-    }
-    out = {
-        "metadata": metadata,
-        "data": d
-    }
+        metadata = {
+            "runs": self.runs,
+            "window_stride": self.window_stride,
+            "num_windows": self.num_windows,
+            "seed": seed,
+        }
+        out = {
+            "metadata": metadata,
+            "data": d
+        }
 
-    with open(out_path, "wb") as f:
-        pickle.dump(out, f)
+        with open(out_path, "wb") as f:
+            pickle.dump(out, f)
+
+
 
 if __name__ == "__main__":
-    generate_pickle(
-        serial_numbers=ALL_SERIAL_NUMBERS,
-        runs=[1],
-        distances=ALL_DISTANCES_FEET,
+    oracle_sdb = ORACLE_SDB(
         num_floats_in_window=512,
         window_stride=50,
         num_windows=10000,
+        runs=[1],
+    )
+    oracle_sdb.build_dataset(
         seed=1337,
+        domains=ALL_DISTANCES_FEET,
+        labels=ALL_SERIAL_NUMBERS,
         out_path="oracle.stratified_ds.2022A.pkl",
     )
