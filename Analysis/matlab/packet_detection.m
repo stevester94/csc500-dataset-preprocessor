@@ -1,26 +1,19 @@
-% path = "/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/14ft/WiFi_air_X310_3123D52_14ft_run1.sigmf-data";
-% path = "/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/32ft/WiFi_air_X310_3123D64_32ft_run1.sigmf-data";
-% path = "/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/32ft/WiFi_air_X310_3123D70_32ft_run2.sigmf-data";
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/32ft/WiFi_air_X310_3123D89_32ft_run1.sigmf-data";
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/38ft/WiFi_air_X310_3123D70_38ft_run1.sigmf-data";
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/38ft/WiFi_air_X310_3123D79_38ft_run1.sigmf-data";
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/44ft/WiFi_air_X310_3123D52_44ft_run2.sigmf-data";
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/44ft/WiFi_air_X310_3123D54_44ft_run2.sigmf-data";
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/44ft/WiFi_air_X310_3123D7E_44ft_run2.sigmf-data";
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/44ft/WiFi_air_X310_3123D89_44ft_run2.sigmf-data";
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/44ft/WiFi_air_X310_3124E4A_44ft_run1.sigmf-data";
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/50ft/WiFi_air_X310_3123D76_50ft_run2.sigmf-data";
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/50ft/WiFi_air_X310_3124E4A_50ft_run1.sigmf-data";
+% path="/mnt/wd500GB/CSC500/csc500-main/datasets/KRI-16Devices-RawData/38ft/WiFi_air_X310_3123D70_38ft_run1.sigmf-data";
+% f = fopen(path,'r');
+% rx = fread(f, 'double');
 
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/56ft/WiFi_air_X310_3123D64_56ft_run1.sigmf-data";
-% path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/56ft/WiFi_air_X310_3123D70_56ft_run2.sigmf-data";
 
-path="/mnt/wd500GB/CSC500/csc500-super-repo/datasets/KRI-16Devices-RawData/2ft/WiFi_air_X310_3123D58_2ft_run1.sigmf-data";
+path = "/media/steven/main/blessed_dataset_2/bin/day-2_transmitter-18_transmission-7.bin";
+% path = "/media/steven/main/blessed_dataset_2/bin/day-2_transmitter-19_transmission-7.bin";
+% path = "/media/steven/main/blessed_dataset_2/bin/day-3_transmitter-14_transmission-1.bin";
+% path = "/media/steven/main/blessed_dataset_2/bin/day-3_transmitter-19_transmission-6.bin";
+% path = "/media/steven/main/blessed_dataset_2/bin/day-3_transmitter-3_transmission-1.bin";
+% path = "/media/steven/main/blessed_dataset_2/bin/day-8_transmitter-5_transmission-6.bin";
+
+
 f = fopen(path,'r');
+rx = fread(f, 'single');
 
-% f = fopen("/mnt/wd500GB/CSC500/csc500-super-repo/csc500-dataset-preprocessor/Analysis/cores_one.bin");
-% f = fopen("5_fake_packets.bin");
-rx = fread(f, 'double');
 fclose(f);
 
 
