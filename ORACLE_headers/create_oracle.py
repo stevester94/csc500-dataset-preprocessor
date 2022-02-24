@@ -155,11 +155,11 @@ def generate_pickle(
 if __name__ == "__main__":
     generate_pickle(
         serial_numbers=ALL_SERIAL_NUMBERS,
-        runs=[1],
-        distances=list(set(ALL_DISTANCES_FEET)-{2,62}),
+        runs=[2],
+        distances=list(set(ALL_DISTANCES_FEET)-{2,62,56}),
         num_floats_in_window=512,
         header_indices_path="./isolate_headers/indices.json",
         num_windows=1365,
         seed=1337,
-        out_path="oracle.stratified_ds.2022A.pkl",
+        out_path="oracle.run_2.stratified_ds.2022A.pkl",
     )
