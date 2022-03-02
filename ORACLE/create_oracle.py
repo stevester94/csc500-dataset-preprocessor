@@ -117,7 +117,21 @@ if __name__ == "__main__":
     )
     oracle_sdb.build_dataset(
         seed=1337,
-        domains=ALL_DISTANCES_FEET,
+        domains=list(set(ALL_DISTANCES_FEET)-{2,62,56}),
         labels=ALL_SERIAL_NUMBERS,
-        out_path="oracle.stratified_ds.2022A.pkl",
+        out_path="oracle.Run1_10kExamples_stratified_ds.2022A.pkl",
+    )
+
+
+    oracle_sdb = ORACLE_SDB(
+        num_floats_in_window=512,
+        window_stride=50,
+        num_windows=10000,
+        runs=[2],
+    )
+    oracle_sdb.build_dataset(
+        seed=1337,
+        domains=list(set(ALL_DISTANCES_FEET)-{2,62,56}),
+        labels=ALL_SERIAL_NUMBERS,
+        out_path="oracle.Run2_10kExamples_stratified_ds.2022A.pkl",
     )
