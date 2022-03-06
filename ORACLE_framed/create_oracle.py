@@ -94,7 +94,7 @@ def sanity_check_header_indices(header_indices:dict, paths:list)->None:
 
             i += 1
 
-def generate_pickle(
+def build_pickle(
     serial_numbers,
     runs,
     distances,
@@ -102,7 +102,6 @@ def generate_pickle(
     header_indices_path,
     num_windows,
     seed,
-    out_path,
 ):
     d = {}
     rng = np.random.default_rng(seed)
@@ -154,6 +153,28 @@ def generate_pickle(
         "metadata": metadata,
         "data": d
     }
+
+    return out
+
+def generate_pickle(
+    serial_numbers,
+    runs,
+    distances,
+    num_floats_in_window,
+    header_indices_path,
+    num_windows,
+    seed,
+    out_path,
+):
+    out = build_pickle(
+        serial_numbers,
+        runs,
+        distances,
+        num_floats_in_window,
+        header_indices_path,
+        num_windows,
+        seed,
+    )
 
     with open(out_path, "wb") as f:
         pickle.dump(out, f)
