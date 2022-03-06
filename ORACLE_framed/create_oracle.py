@@ -49,12 +49,18 @@ def get_single_oracle_combo(
 
     print(f"Processing {path}: choosing {num_windows} from a possible {len(indices)} indices")
 
-    choices = np_rng.choice(len(indices), num_windows, False)
+
+    # This chunk is a little ugly because we can hit an edge case where a packet was detected
+    # near the end of a capture, so we can't get the correct num_floats_in_window
+    choices = np_rng.choice(indices, len(indices), False)
     windows = []
-    for c in choices:
-        start = c*2
+    idx = 0
+    while len(windows) < num_windows:
+        start = choices[idx]*2
+        idx += 1
         ar = np.array(mm[start:start+num_floats_in_window]) 
-        assert len(ar) == num_floats_in_window
+        if len(ar) != num_floats_in_window:
+            continue
         windows.append( ar )
 
     if reshape:
@@ -186,9 +192,9 @@ if __name__ == "__main__":
         distances=list(set(ALL_DISTANCES_FEET)-{2,62,56}),
         num_floats_in_window=512,
         header_indices_path="./isolate_headers/indices.json",
-        num_windows=1300,
+        num_windows=2000,
         seed=1337,
-        out_path="oracle.Run1_framed_1300Examples_stratified_ds.2022A.pkl",
+        out_path="oracle.Run1_framed_2000Examples_stratified_ds.2022A.pkl",
     )
 
     generate_pickle(
@@ -197,7 +203,7 @@ if __name__ == "__main__":
         distances=list(set(ALL_DISTANCES_FEET)-{2,62,56}),
         num_floats_in_window=512,
         header_indices_path="./isolate_headers/indices.json",
-        num_windows=1300,
+        num_windows=2000,
         seed=1337,
-        out_path="oracle.Run2_framed_1300Examples_stratified_ds.2022A.pkl",
+        out_path="oracle.Run2_framed_2000Examples_stratified_ds.2022A.pkl",
     )
